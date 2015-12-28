@@ -11,13 +11,6 @@ from __future__ import print_function, division
 
 print(__doc__)
 
-try:
-    import numpy as np
-except ImportError:
-    print("Numpy not installed, try - pip install numpy")
-    import sys
-    sys.exit()
-
 #
 #   Subroutines
 #

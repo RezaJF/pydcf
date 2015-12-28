@@ -1,3 +1,9 @@
 *.swp
 *~
+
+# Ignore Python build files
 *.pyc
+.cache/
+
+# Ignore PyCharm files
+.idea/
