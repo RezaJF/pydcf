@@ -1,11 +1,11 @@
-'''
+"""
     A simple implementation of the discrete correlation function (DCF)
     Author: Damien Robertson - robertsondamien@gmail.com
 
     Usage:
       $ python dcf.py -h for help and basic instruction
 
-'''
+"""
 
 from __future__ import print_function, division
 
@@ -24,13 +24,13 @@ except ImportError:
 
 def tsdtrnd(ts, vrbs, plyft):
 
-    '''
+    """
         Subroutine - tsdtrnd
           Time series detrend using the user chosen polynomial order. Subroutine
           fits a ploynomial to the time series data and subtracts.
 
         Requires scipy.optimize (scipy) to be installed.
-    '''
+    """
 
     if plyft == 0:
 
@@ -80,10 +80,10 @@ def tsdtrnd(ts, vrbs, plyft):
 
 def set_unitytime(ts1, ts2):
 
-    '''
+    """
         Subroutine - set_unitytime
           Simply shifts both time series so that one starts at zero.
-    '''
+    """
 
     unitytime = min(np.min(ts1[:,0]), np.min(ts2[:,0]))
     ts1[:,0] = ts1[:,0] - unitytime
@@ -93,12 +93,12 @@ def set_unitytime(ts1, ts2):
 
 def chck_tserr(ts):
 
-    '''
+    """
         Subroutine - chck_tserr
           Makes sure user has entered a properly formatted ts file.
           Checks to see if input time series has a measurement error column - third
           column of input file.
-    '''
+    """
 
     assert ((ts.shape[1] == 2) or (ts.shape[1] == 3)), "TS SHAPE ERROR"
 
@@ -114,11 +114,11 @@ def chck_tserr(ts):
 
 def get_timeseries(infile1, infile2, vrbs, plyft):
 
-    '''
+    """
         Subroutine - get_timeseries
           Takes the user specified filenames and runs tsdtrnd and set_unitytime.
           Returns the prepared time series for DCF.
-    '''
+    """
 
     ts1_in = np.loadtxt(infile1, comments='#', delimiter=',')
     ts2_in = np.loadtxt(infile2, comments='#', delimiter=',')
@@ -134,10 +134,10 @@ def get_timeseries(infile1, infile2, vrbs, plyft):
 
 def sdcf(ts1, ts2, t, dt):
 
-    '''
+    """
         Subroutine - sdcf
           DCF algorithm with slot weighting
-    '''
+    """
 
     dcf = np.zeros(t.shape[0])
     dcferr = np.zeros(t.shape[0])
@@ -169,10 +169,10 @@ def sdcf(ts1, ts2, t, dt):
 
 def gdcf(ts1, ts2, t, dt):
 
-    '''
+    """
         Subroutine - gdcf
           DCF algorithm with gaussian weighting
-    '''
+    """
 
     h = dt/4.0
     gkrn = lambda x: np.exp(-1.0 * np.abs(x)**2 / (2.0 * h**2)) \
@@ -186,20 +186,20 @@ def gdcf(ts1, ts2, t, dt):
     dst = np.empty((ts1.shape[0], ts2.shape[0]))
     for i in range(ts1.shape[0]):
         for j in range(ts2.shape[0]):
-            dst[i,j] = ts2[j,0] - ts1[i,0]
+            dst[i, j] = ts2[j, 0] - ts1[i, 0]
 
     for k in range(t.shape[0]):
         gdst = gkrn(dst - t[k])
         ts1idx, ts2idx = np.where(gdst >= cntrbt)
 
-        mts2 = np.mean(ts2[ts2idx,1])
-        mts1 = np.mean(ts1[ts1idx,1])
+        mts2 = np.mean(ts2[ts2idx, 1])
+        mts1 = np.mean(ts1[ts1idx, 1])
         n[k] = ts1idx.shape[0]
 
         dcfdnm = np.sqrt((np.var(ts1[ts1idx,1]) - np.mean(ts1[ts1idx,2])**2) \
                          * (np.var(ts2[ts2idx,1]) - np.mean(ts2[ts2idx,2])**2))
 
-        dcfs = (ts2[ts2idx,1] - mts2) * (ts1[ts1idx,1] - mts1) / dcfdnm
+        dcfs = (ts2[ts2idx, 1] - mts2) * (ts1[ts1idx, 1] - mts1) / dcfdnm
         dcf[k] = np.sum(dcfs) / float(n[k])
         dcferr[k] = np.sqrt(np.sum((dcfs - dcf[k])**2)) / float(n[k] - 1)
 
@@ -303,7 +303,7 @@ if OPTS.verbose:
 #   **PITFALL**
 #     Just because you can subtract a n'th order polynomial doesn't mean you
 #     should. The program doesn't monitor or tell you a subtraction is
-#     harmful or unnecessary. 
+#     harmful or unnecessary.
 #
 #   **PITFALL 2**
 #     If you have subtracted your own fits from the time series, leave the
